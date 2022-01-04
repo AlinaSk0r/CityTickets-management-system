@@ -35,25 +35,24 @@ public final class TicketService {
         else return maybeTicket.get();
     }
 
-    public long create(long event_id, long amount, long place_id, long customer_id){
+    public long create(long event_id, long amount, long customer_id){
         RestTemplate restTemplate=new RestTemplate() ;
         User user=restTemplate.getForObject(userURL+"/"+customer_id, User.class);
-        Place place=restTemplate.getForObject(placeURL+"/"+place_id, Place.class);
         Event event=restTemplate.getForObject(eventURL+"/"+event_id, Event.class);
-        final Ticket ticket = new Ticket(event.getName(), event.getDate(), event.getTime(), event.getPrice(), amount, event.getPrice().multiply(BigDecimal.valueOf(amount)), place.getName(), user.getUsername());
+        final Ticket ticket = new Ticket(event.getName(), event.getDate(), event.getTime(), event.getPrice(), amount, event.getPrice().multiply(BigDecimal.valueOf(amount)), event.getPlace(), user.getUsername());
         final Ticket savedTicket = ticketRepo.save(ticket);
 
         return savedTicket.getId();
     }
 
-    public void update(Long id, long event_id, long amount, long place_id, long customer_id) throws IllegalArgumentException{
+    public void update(Long id, long event_id, long amount, long customer_id) throws IllegalArgumentException{
         final Optional<Ticket> maybeTicket = ticketRepo.findById(id);
         if (maybeTicket.isEmpty()) throw new IllegalArgumentException("Ticket not found");
         final Ticket ticket = maybeTicket.get();
         RestTemplate restTemplate=new RestTemplate() ;
         User user=restTemplate.getForObject(userURL+"/"+customer_id, User.class);
-        Place place=restTemplate.getForObject(placeURL+"/"+place_id, Place.class);
         Event event=restTemplate.getForObject(eventURL+"/"+event_id, Event.class);
+        Place place=restTemplate.getForObject(placeURL+"/"+event.getPlace_id(), Place.class);
         if (event.getName() != null && !event.getName().isBlank()) ticket.setEvent(event.getName());
         if (event.getDate() != null) ticket.setDate(event.getDate());
         if (event.getTime() != null) ticket.setTime(event.getTime());
