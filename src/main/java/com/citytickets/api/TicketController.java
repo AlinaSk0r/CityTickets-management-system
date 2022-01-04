@@ -62,14 +62,9 @@ public final class TicketController {
     public @NotNull
     @org.jetbrains.annotations.NotNull ResponseEntity<Void> create(@RequestBody @NotNull @org.jetbrains.annotations.NotNull Ticket ticket){
         final long event_id = ticket.getEvent_id();
-        final Date date = ticket.getDate();
-        final Time time = ticket.getTime();
-        final BigDecimal price = ticket.getPrice();
         final long amount = ticket.getAmount();
-        final BigDecimal total = ticket.getTotal();
-        final long place_id = ticket.getPlace_id();
         final long costumer_id = ticket.getCustomer_id();
-        final long id = ticketService.create(event_id, amount, place_id, costumer_id);
+        final long id = ticketService.create(event_id, amount, costumer_id);
         final String location = String.format("/tickets/%d",id);
 
         return ResponseEntity.created(URI.create(location)).build();
@@ -79,16 +74,11 @@ public final class TicketController {
     public @NotNull
     @org.jetbrains.annotations.NotNull ResponseEntity<Void> update(@PathVariable long id, @RequestBody @NotNull @org.jetbrains.annotations.NotNull Ticket ticket){
         final long event_id = ticket.getEvent_id();
-        final Date date = ticket.getDate();
-        final Time time = ticket.getTime();
-        final BigDecimal price = ticket.getPrice();
         final long amount = ticket.getAmount();
-        final BigDecimal total = ticket.getTotal();
-        final long place_id = ticket.getPlace_id();
         final long costumer_id = ticket.getCustomer_id();
 
         try {
-            ticketService.update(id, event_id, amount, place_id, costumer_id);
+            ticketService.update(id, event_id, amount, costumer_id);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e){ return ResponseEntity.notFound().build(); }
     }
