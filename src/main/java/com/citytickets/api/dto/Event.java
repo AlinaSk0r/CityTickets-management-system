@@ -27,4 +27,8 @@ public final class Event {
 
     private Time time;
 
+    private long place_id;
+
+    @NotBlank
+    private String place;
 }
