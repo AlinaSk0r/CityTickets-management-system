@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-places
+spec:
+  selector:
+    app: service-places
+  type: NodePort
+  ports:
+    - name: http
+      port: 8082
+      nodePort: 31001
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-places
+spec:
+  selector:
+    matchLabels:
+      app: service-places
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: service-places
+    spec:
+      containers:
+        - name: server
+          image: skor39/service-places
+          ports:
+            - name: http
+              containerPort: 8082
+
+---
